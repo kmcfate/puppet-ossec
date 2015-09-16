@@ -27,7 +27,7 @@ class ossec::common {
           #  key_source  => 'http://ossec.alienvault.com/repos/apt/conf/ossec-key.gpg.key',
           #}
 
-          apt::source { 'alienvault-ossec':
+          ::apt::source { 'alienvault-ossec':
             ensure		=> present,
             comment		=> 'This is the AlienVault Ubuntu repository for Ossec',
             location	=> 'http://ossec.alienvault.com/repos/apt/ubuntu',
