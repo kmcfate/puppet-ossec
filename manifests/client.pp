@@ -11,7 +11,7 @@ class ossec::client(
     'Debian' : {
       package { $ossec::common::hidsagentpackage:
         ensure  => installed,
-        require => Apt::Source['alienvault'],
+        require => Apt::Source['alienvault-ossec'],
       }
     }
     'RedHat' : {

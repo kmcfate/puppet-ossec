@@ -49,7 +49,7 @@ class ossec::common {
           $hidsserverservice = 'ossec'
           $hidsserverpackage = 'ossec-hids'
 
-          apt::source { 'alienvault':
+          apt::source { 'alienvault-ossec':
             ensure      => present,
             comment     => 'This is the AlienVault Debian repository for Ossec',
             location    => 'http://ossec.alienvault.com/repos/apt/debian',
