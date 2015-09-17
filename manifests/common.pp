@@ -8,33 +8,16 @@ class ossec::common {
 
       case $::lsbdistcodename {
         /(lucid|precise|trusty)/: {
-          #$hidsserverservice = 'ossec-hids-server'
-          #$hidsserverpackage = 'ossec-hids-server'
-          #apt::ppa { 'ppa:nicolas-zin/ossec-ubuntu': }
-
           $hidsserverservice = 'ossec'
           $hidsserverpackage = 'ossec-hids'
 
-          #apt::source { 'alienvault':
-          #  ensure      => present,
-          #  comment     => 'This is the AlienVault Debian repository for Ossec',
-          #  location    => 'http://ossec.alienvault.com/repos/apt/debian',
-          #  release     => $::lsbdistcodename,
-          #  repos       => 'main',
-          #  include_src => false,
-          #  include_deb => true,
-          #  key         => '9A1B1C65',
-          #  key_source  => 'http://ossec.alienvault.com/repos/apt/conf/ossec-key.gpg.key',
-          #}
-
-          ::apt::source { 'alienvault-ossec':
+          apt::source { 'alienvault-ossec':
             ensure		=> present,
             comment		=> 'This is the AlienVault Ubuntu repository for Ossec',
             location	=> 'http://ossec.alienvault.com/repos/apt/ubuntu',
             release		=> $::lsbdistcodename,
             repos		=> 'main',
             key		=> {
-              #id		=> '9A1B1C65',
               id		=> '9FE55537D1713CA519DFB85114B9C8DB9A1B1C65',
               source		=> 'http://ossec.alienvault.com/repos/apt/conf/ossec-key.gpg.key',
             },
