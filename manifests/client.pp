@@ -83,6 +83,12 @@ class ossec::client(
     mode    => '0755',
   }
 
+  exec { "agent-auth":
+    command   	=> "/var/ossec/bin/agent-auth -m $ossec_server_ip -A $::fqdn -D /var/ossec/",
+    creates   	=> "/var/ossec/etc/client.keys",
+    require   	=> Package[$ossec::common::hidsagentpackage]
+  }
+
   # SELinux
   if ($::osfamily == 'RedHat' and $selinux == true) {
     selinux::module { 'ossec-logrotate':
