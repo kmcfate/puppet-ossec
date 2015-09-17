@@ -18,7 +18,7 @@ class ossec::server (
     'Debian' : {
       package { $ossec::common::hidsserverpackage:
         ensure  => installed,
-        require => Apt::Source['alienvault'],
+        require => Apt::Source['alienvault-ossec'],
       }
     }
     'RedHat' : {
