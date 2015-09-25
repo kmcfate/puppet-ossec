@@ -1,5 +1,5 @@
   <email_alerts>
     <email_to><%= @alert_email %></email_to>
     <% if @alert_group != false -%><group><% @alert_group.each do |gr| -%><%= @gr %>,<% end %></group><% end %>
-    <level><%= @ossec_email_alert_level %></level>
+    <level><%= @alert_level %></level>
   </email_alerts>
