@@ -85,3 +85,9 @@
  Jonathan Gazeley <jonathan.gazeley@bristol.ac.uk>:
   * Update RPM GPG key (thanks @sedlund)
 
+2015-10-29 Jonathan Gazeley <jonathan.gazeley@bristol.ac.uk> - 1.8.2
+===========================================================
+
+ Jonathan Gazeley <jonathan.gazeley@bristol.ac.uk>:
+  * Allow this repo to install only ossec packages, not other stuff that interferes with the system
+
