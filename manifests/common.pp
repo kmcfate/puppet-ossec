@@ -55,13 +55,14 @@ class ossec::common {
     'Redhat' : {
       # Set up OSSEC repo
       yumrepo { 'ossec':
-        descr      => 'CentOS / Red Hat Enterprise Linux $releasever - ossec.net',
-        enabled    => true,
-        gpgkey     => 'https://www.atomicorp.com/RPM-GPG-KEY.atomicorp.txt',
-        mirrorlist => 'http://updates.atomicorp.com/channels/mirrorlist/ossec/centos-$releasever-$basearch',
-        priority   => 1,
-        protect    => false,
-        require    => Class['epel'],
+        descr       => 'CentOS / Red Hat Enterprise Linux $releasever - ossec.net',
+        enabled     => true,
+        gpgkey      => 'https://www.atomicorp.com/RPM-GPG-KEY.atomicorp.txt',
+        mirrorlist  => 'http://updates.atomicorp.com/channels/mirrorlist/ossec/centos-$releasever-$basearch',
+        priority    => 1,
+        protect     => false,
+        require     => Class['epel'],
+        includepkgs => 'ossec*',
       }
 
       # Set up EPEL repo
