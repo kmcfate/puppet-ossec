@@ -89,14 +89,25 @@ class ossec::client(
     owner   => 'ossec',
     group   => 'ossec',
     mode    => '0755',
+    seltype => 'var_log_t',
   }
 
-  # SELinux
+  # SELinux policy isn't needed any more
   if ($::osfamily == 'RedHat' and $selinux == true) {
     selinux::module { 'ossec-logrotate':
-      ensure => 'present',
+      ensure => 'absent',
       source => 'puppet:///modules/ossec/ossec-logrotate.te',
     }
+  }
+
+  # Fix up the logrotate file with sensible defaults
+    file { '/etc/logrotate.d/ossec-hids':
+    ensure  => file,
+    source => 'puppet:///modules/ossec/ossec-hids',
+    require => Package[$ossec::common::hidsagentpackage],
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
   }
 }
 
