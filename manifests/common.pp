@@ -58,7 +58,7 @@ class ossec::common {
         descr       => 'CentOS / Red Hat Enterprise Linux $releasever - ossec.net',
         enabled     => true,
         gpgkey      => 'https://www.atomicorp.com/RPM-GPG-KEY.atomicorp.txt',
-        mirrorlist  => 'http://updates.atomicorp.com/channels/mirrorlist/ossec/centos-$releasever-$basearch',
+        mirrorlist  => "http://updates.atomicorp.com/channels/mirrorlist/ossec/centos-${::operatingsystemmajrelease}-\$basearch",
         priority    => 1,
         protect     => false,
         require     => Class['epel'],
