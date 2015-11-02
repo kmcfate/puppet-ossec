@@ -25,33 +25,6 @@ class ossec::server (
     'RedHat' : {
       case $::operatingsystem {
         'CentOS' : {
-          case $::operatingsystemmajrelease {
-            '7' : {
-              package { 'mariadb': ensure => present }
-              package { 'ossec-hids':
-                ensure   => installed,
-              }
-              package { $ossec::common::hidsserverpackage:
-                ensure  => installed,
-                require => Package['mariadb'],
-              }
-            }
-            default: {
-              package { 'ossec-hids':
-                ensure   => installed,
-              }
-              package { $ossec::common::hidsserverpackage:
-                ensure  => installed,
-                require => Class['mysql::client'],
-              }
-            }
-          }
-        }
-        'RedHat' : {
-          package { $ossec::common::hidsserverpackage:
-            ensure  => installed,
-            require => Class['mysql::client'],
-          }
           package { 'ossec-hids':
             ensure   => installed,
           }
@@ -60,9 +33,21 @@ class ossec::server (
             require => Class['mysql::client'],
           }
         }
+        'RedHat' : {
+          package { 'ossec-hids':
+            ensure   => installed,
+          }
+          package { $ossec::common::hidsserverpackage:
+            ensure  => installed,
+            require => Class['mysql::client'],
+          }
+        }
+        default: {
+          fail("Operating system not supported: ${::operatingsystem}")
+        }
       }
     }
-    default: { fail('OS family not supported') }
+    default: { fail("OS family not supported: ${::osfamily}") }
   }
 
   service { $ossec::common::hidsserverservice:
