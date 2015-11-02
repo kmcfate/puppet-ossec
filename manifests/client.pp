@@ -91,7 +91,6 @@ class ossec::client(
     mode    => '0755',
   }
 
-
   # SELinux
   if ($::osfamily == 'RedHat' and $selinux == true) {
     selinux::module { 'ossec-logrotate':
