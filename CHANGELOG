@@ -91,3 +91,12 @@
  Jonathan Gazeley <jonathan.gazeley@bristol.ac.uk>:
   * Allow this repo to install only ossec packages, not other stuff that interferes with the system
 
+2015-11-02 Jonathan Gazeley <jonathan.gazeley@bristol.ac.uk> - 1.9.0
+===========================================================
+
+ Jonathan Gazeley <jonathan.gazeley@bristol.ac.uk>:
+  * Fix SELinux context of log files and do away with custom SELinux module
+  * Install custom logrotate script as the package default is broken
+  * Work around Atomicorp's incorrect RPM mirrorlist for EL7
+  * Add ability to whitelist hosts
+  * Clean up package installation
