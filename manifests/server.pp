@@ -9,6 +9,7 @@ class ossec::server (
   $ossec_email_alert_level             = 7,
   $ossec_ignorepaths                   = [],
   $ossec_scanpaths                     = [],
+  $ossec_white_list                    = [],
   $ossec_emailnotification             = 'yes',
 ) {
   include ossec::common
@@ -19,39 +20,12 @@ class ossec::server (
     'Debian' : {
       package { $ossec::common::hidsserverpackage:
         ensure  => installed,
-        require => Apt::Source['alienvault'],
+        require => Apt::Source['alienvault-ossec'],
       }
     }
     'RedHat' : {
       case $::operatingsystem {
         'CentOS' : {
-          case $::operatingsystemmajrelease {
-            '7' : {
-              package { 'mariadb': ensure => present }
-              package { 'ossec-hids':
-                ensure   => installed,
-              }
-              package { $ossec::common::hidsserverpackage:
-                ensure  => installed,
-                require => Package['mariadb'],
-              }
-            }
-            default: {
-              package { 'ossec-hids':
-                ensure   => installed,
-              }
-              package { $ossec::common::hidsserverpackage:
-                ensure  => installed,
-                require => Class['mysql::client'],
-              }
-            }
-          }
-        }
-        'RedHat' : {
-          package { $ossec::common::hidsserverpackage:
-            ensure  => installed,
-            require => Class['mysql::client'],
-          }
           package { 'ossec-hids':
             ensure   => installed,
           }
@@ -60,9 +34,21 @@ class ossec::server (
             require => Class['mysql::client'],
           }
         }
+        'RedHat' : {
+          package { 'ossec-hids':
+            ensure   => installed,
+          }
+          package { $ossec::common::hidsserverpackage:
+            ensure  => installed,
+            require => Class['mysql::client'],
+          }
+        }
+        default: {
+          fail("Operating system not supported: ${::operatingsystem}")
+        }
       }
     }
-    default: { fail('OS family not supported') }
+    default: { fail("OS family not supported: ${::osfamily}") }
   }
 
   service { $ossec::common::hidsserverservice:

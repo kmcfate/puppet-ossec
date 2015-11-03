@@ -1,6 +1,10 @@
 <ossec_config>
   <client>
-  <server-ip><%= @ossec_server_ip %></server-ip>
+    <% if @ossec_server_ip =~ /^[1-9].*/ %>
+      <server-ip><%= @ossec_server_ip %></server-ip>
+    <% else -%>
+      <server-hostname><%= @ossec_server_ip %></server-hostname>
+    <% end -%>
   </client>
 
   <syscheck>

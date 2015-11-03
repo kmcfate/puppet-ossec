@@ -2,7 +2,7 @@
 class ossec::client(
   $ossec_active_response   = true,
   $ossec_server_ip,
-  $ossec_emailnotification = "yes",
+  $ossec_emailnotification = 'yes',
   $selinux = false,
 ) {
   include ossec::common
@@ -11,7 +11,7 @@ class ossec::client(
     'Debian' : {
       package { $ossec::common::hidsagentpackage:
         ensure  => installed,
-        require => Apt::Source['alienvault'],
+        require => Apt::Source['alienvault-ossec'],
       }
     }
     'RedHat' : {
@@ -55,22 +55,30 @@ class ossec::client(
     notify  => Service[$ossec::common::hidsagentservice]
   }
 
-  concat { '/var/ossec/etc/client.keys':
-    owner   => 'root',
-    group   => 'ossec',
-    mode    => '0640',
-    notify  => Service[$ossec::common::hidsagentservice],
-    require => Package[$ossec::common::hidsagentpackage]
-  }
-  ossec::agentkey{ "ossec_agent_${::fqdn}_client":
-    agent_id         => $::uniqueid,
-    agent_name       => $::fqdn,
-    agent_ip_address => $::ipaddress,
-  }
-  @@ossec::agentkey{ "ossec_agent_${::fqdn}_server":
-    agent_id         => $::uniqueid,
-    agent_name       => $::fqdn,
-    agent_ip_address => $::ipaddress
+  if $::uniqueid {
+    concat { '/var/ossec/etc/client.keys':
+      owner   => 'root',
+      group   => 'ossec',
+      mode    => '0640',
+      notify  => Service[$ossec::common::hidsagentservice],
+      require => Package[$ossec::common::hidsagentpackage]
+    }
+    ossec::agentkey{ "ossec_agent_${::fqdn}_client":
+      agent_id         => $::uniqueid,
+      agent_name       => $::fqdn,
+      agent_ip_address => $::ipaddress,
+    }
+    @@ossec::agentkey{ "ossec_agent_${::fqdn}_server":
+      agent_id         => $::uniqueid,
+      agent_name       => $::fqdn,
+      agent_ip_address => $::ipaddress
+    }
+  } else {
+    exec { 'agent-auth':
+      command => "/var/ossec/bin/agent-auth -m ${ossec_server_ip} -A ${::fqdn} -D /var/ossec/",
+      creates => '/var/ossec/etc/client.keys',
+      require => Package[$ossec::common::hidsagentpackage]
+    }
   }
 
   # Set log permissions properly to fix
@@ -81,13 +89,25 @@ class ossec::client(
     owner   => 'ossec',
     group   => 'ossec',
     mode    => '0755',
+    seltype => 'var_log_t',
   }
 
-  # SELinux
+  # SELinux policy isn't needed any more
   if ($::osfamily == 'RedHat' and $selinux == true) {
     selinux::module { 'ossec-logrotate':
-      ensure => 'present',
+      ensure => 'absent',
       source => 'puppet:///modules/ossec/ossec-logrotate.te',
     }
   }
+
+  # Fix up the logrotate file with sensible defaults
+    file { '/etc/logrotate.d/ossec-hids':
+    ensure  => file,
+    source => 'puppet:///modules/ossec/ossec-hids',
+    require => Package[$ossec::common::hidsagentpackage],
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+  }
 }
+
